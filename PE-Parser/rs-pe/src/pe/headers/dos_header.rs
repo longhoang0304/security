@@ -40,7 +40,7 @@ pub struct DOSHeader {
     pub e_cs: u16,          // Initial (relative) CS value
     pub e_lfarlc: u16,      // File address of relocation table
     pub e_ovno: u16,        // Overlay number
-    pub e_res: [u16; 3],    // Reserved words
+    pub e_res: [u16; 4],    // Reserved words
     pub e_oemid: u16,       // OEM identifier (for e_oeminfo)
     pub e_oeminfo: u16,     // OEM information; e_oemid specific
     pub e_res2: [u16; 10],  // Reserved words
@@ -83,8 +83,8 @@ impl Parsable for DOSHeader {
             return Err(ParseError(String::from("Not a PE file")))
         }
 
-        let e_res_vec = take_words_array_start(data, 28, 2 * 3);
-        let e_res2_vec: Vec<u16> = take_words_array_start(data, 36, 2 * 10).try_into().unwrap();
+        let e_res_vec = take_words_array_start(data, 28, 2 * 4);
+        let e_res2_vec: Vec<u16> = take_words_array_start(data, 40, 2 * 10).try_into().unwrap();
 
         Ok(DOSHeader{
             e_magic,
@@ -102,10 +102,10 @@ impl Parsable for DOSHeader {
             e_lfarlc: take_bytes_start::<u16>(data, 24, 2),
             e_ovno: take_bytes_start::<u16>(data, 26, 2),
             e_res: e_res_vec.try_into().unwrap(),
-            e_oemid: take_bytes_start::<u16>(data, 32, 2),
-            e_oeminfo: take_bytes_start::<u16>(data, 34, 2),
+            e_oemid: take_bytes_start::<u16>(data, 36, 2),
+            e_oeminfo: take_bytes_start::<u16>(data, 38, 2),
             e_res2: e_res2_vec.try_into().unwrap(),
-            e_lfanew: take_bytes_start::<i32>(data, 56, 2),
+            e_lfanew: take_bytes_start::<i32>(data, 60, 4),
         })
     }
 }

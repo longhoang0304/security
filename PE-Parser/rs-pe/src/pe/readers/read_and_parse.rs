@@ -7,7 +7,7 @@ pub fn read_and_parse(file_name: &str) -> Result<DOSHeader, Box<dyn Error>> {
     let mut pe_file = fs::File::open(file_name)?;
     let mut data = Vec::new();
 
-    pe_file.by_ref().take(49 * 2).read_to_end(&mut data)?;
+    pe_file.by_ref().take(64).read_to_end(&mut data)?;
 
     let dos_header = DOSHeader::from_bytes(&data).unwrap();
 
